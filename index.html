@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sovereign Spiral Development Framework - Professional Software Solutions</title>
+    <meta name="description" content="Professional open-source software tools and frameworks with commercial licensing options">
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=USD&components=buttons&enable-funding=venmo,paylater,card"></script>
+    <style>
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --bg-light: #f8fafc;
+            --border: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: #f5f5f5;
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tagline {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        nav {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        nav a:hover {
+            opacity: 0.8;
+        }
+
+        .cart-button {
+            position: relative;
+            background: rgba(255,255,255,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+            border: none;
+            color: white;
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        .cart-button:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .hero {
+            background: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .trust-badges {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .trust-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .github-config {
+            background: white;
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .config-form {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .config-form input {
+            flex: 1;
+            min-width: 200px;
+            padding: 0.75rem;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .config-form button {
+            padding: 0.75rem 2rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .config-form button:hover {
+            opacity: 0.9;
+        }
+
+        .pricing-section {
+            padding: 3rem 0;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .pricing-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .pricing-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .pricing-price {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 1rem 0;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin: 1rem 0 2rem 0;
+            text-align: left;
+        }
+
+        .pricing-features li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .pricing-features li:last-child {
+            border-bottom: none;
+        }
+
+        .pricing-card .btn {
+            width: 100%;
+        }
+
+        .recommended {
+            border: 2px solid var(--primary);
+            position: relative;
+        }
+
+        .recommended::before {
+            content: "Recommended";
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: white;
+            padding: 0.25rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .projects {
+            padding: 3rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            border: 3px solid var(--border);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .project-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .project-card h3 {
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .price-tag {
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .free-badge {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        }
+
+        .project-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .repo-stats {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: #718096;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tech-tag {
+            background: var(--bg-light);
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .demo-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 1rem 0;
+            transition: opacity 0.3s;
+        }
+
+        .demo-link:hover {
+            opacity: 0.9;
+        }
+
+        .project-links {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            text-align: center;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            gap: 1rem;
+        }
+
+        .cart-item-info h4 {
+            color: var(--text-primary);
+            margin-bottom: 0.3rem;
+        }
+
+        .cart-item-info p {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        .cart-item-price {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 1.1rem;
+            white-space: nowrap;
+        }
+
+        .remove-item {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+        }
+
+        .remove-item:hover {
+            opacity: 0.8;
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+
+        .cart-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 3rem;
+            color: #718096;
+        }
+
+        footer {
+            background: var(--text-primary);
+            color: white;
+            padding: 3rem 0 1rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            display: block;
+            padding: 0.3rem 0;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 1rem;
+            text-align: center;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .legal-page {
+            background: white;
+            padding: 3rem 0;
+            min-height: 60vh;
+        }
+
+        .legal-page h2 {
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .legal-page h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .legal-page p, .legal-page li {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.8;
+        }
+
+        .legal-page ul {
+            margin-left: 2rem;
+        }
+
+        .error-message {
+            background: #fee;
+            border: 1px solid #fcc;
+            color: #c33;
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .project-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .hero h2 {
+                font-size: 2rem;
+            }
+
+            .config-form {
+                flex-direction: column;
+            }
+
+            .cart-actions {
+                flex-direction: column;
+            }
+
+            .trust-badges {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .cart-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div>
+                    <h1>🔷 SSDF - Sovereign Spiral</h1>
+                    <p class="tagline">Open Source Tools • Commercial Licensing Available</p>
+                </div>
+                <nav>
+                    <a href="#projects">Projects</a>
+                    <a href="#about">About</a>
+                    <a href="#pricing">Pricing</a>
+                    <a href="#contact">Contact</a>
+                    <button class="cart-button" id="cartButton" aria-label="Shopping cart">
+                        🛒 Cart
+                        <span class="cart-count" id="cartCount">0</span>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h2>Professional Open-Source Development Tools</h2>
+            <p>MIT-licensed software tools you can use freely. Need white-labeling, priority support, or commercial rights? We offer commercial licensing too.</p>
+            <div class="trust-badges">
+                <div class="trust-badge">🔒 MIT Licensed</div>
+                <div class="trust-badge">🌐 Open Source</div>
+                <div class="trust-badge">💼 Commercial Options Available</div>
+                <div class="trust-badge">✅ 30-Day Guarantee</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing" class="pricing-section">
+        <div class="container">
+            <h2 class="section-title">Pricing Plans</h2>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Free</h3>
+                    <div class="pricing-price">$0</div>
+                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">MIT License</p>
+                    <ul class="pricing-features">
+                        <li>✔️ Personal use</li>
+                        <li>✔️ Open-source projects</li>
+                        <li>✔️ Internal company use</li>
+                        <li>✔️ Modification allowed</li>
+                        <li>❌ White-labeling</li>
+                        <li>❌ Priority support</li>
+                    </ul>
+                    <a href="#projects" class="btn btn-secondary">Get Started Free</a>
+                </div>
+                <div class="pricing-card recommended">
+                    <h3>Commercial</h3>
+                    <div class="pricing-price">$299 - $499</div>
+                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">One-time payment</p>
+                    <ul class="pricing-features">
+                        <li>✔️ All Free features</li>
+                        <li>✔️ White-label rights</li>
+                        <li>✔️ Remove attribution</li>
+                        <li>✔️ Proprietary embedding</li>
+                        <li>✔️ Legal indemnification</li>
+                        <li>❌ Priority support</li>
+                    </ul>
+                    <button class="btn btn-primary" onclick="alert('Add to cart from project cards below')">Choose Commercial</button>
+                </div>
+                <div class="pricing-card">
+                    <h3>Enterprise</h3>
+                    <div class="pricing-price">$799 - $999</div>
+                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">One-time + annual support</p>
+                    <ul class="pricing-features">
+                        <li>✔️ All Commercial features</li>
+                        <li>✔️ Priority email support</li>
+                        <li>✔️ Custom development</li>
+                        <li>✔️ Team training</li>
+                        <li>✔️ SLA guarantees</li>
+                        <li>✔️ Multi-license discounts</li>
+                    </ul>
+                    <a href="mailto:commercial@ssdf.work.gd?subject=Enterprise Inquiry" class="btn btn-primary">Contact Sales</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="github-config" aria-label="GitHub Configuration">
+        <div class="container">
+            <h2 class="visually-hidden">Load Projects from GitHub</h2>
+            <form class="config-form" onsubmit="loadRepositories(); return false;" role="form" aria-label="GitHub repository configuration">
+                <label class="visually-hidden" for="githubUsername">GitHub Username</label>
+                <input type="text" id="githubUsername" placeholder="GitHub Username" value="CreoDAMO" aria-label="GitHub username">
+                
+                <label class="visually-hidden" for="repoNames">Repository Names</label>
+                <input type="text" id="repoNames" placeholder="Repository names (comma-separated)" value="workflow-yaml-fixer-pro" aria-label="Repository names, comma-separated">
+                
+                <label class="visually-hidden" for="githubToken">Optional GitHub Token</label>
+                <input type="password" id="githubToken" placeholder="Optional GitHub Token (for rate limits)" aria-label="Optional GitHub API token">
+                
+                <button type="submit">Load Projects</button>
+            </form>
+        </div>
+    </section>
+
+    <section class="projects" id="projects">
+        <div class="container">
+            <h2 class="section-title">Available Projects</h2>
+            <div id="projectsContainer">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    Loading projects...
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" style="background: white; padding: 3rem 0;">
+        <div class="container">
+            <h2 class="section-title">About SSDF</h2>
+            <p style="max-width: 800px; margin: 0 auto; text-align: center; color: var(--text-secondary); font-size: 1.1rem;">
+                Sovereign Spiral Development Framework creates professional-grade development tools with a commitment to open source. 
+                All our projects are MIT-licensed and available on GitHub. For organizations needing commercial licensing, 
+                we offer flexible options including white-labeling, priority support, and custom development.
+            </p>
+        </div>
+    </section>
+
+    <div class="modal" id="cartModal" role="dialog" aria-labelledby="cartModalTitle" aria-modal="true">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="cartModalTitle">Shopping Cart</h2>
+                <button class="close-modal" id="closeCartButton" aria-label="Close cart">✕</button>
+            </div>
+            <div id="cartItems"></div>
+            <div class="cart-total" id="cartTotal" style="display: none;">
+                <span>Total:</span>
+                <span id="totalAmount">$0</span>
+            </div>
+            <div class="cart-actions" id="cartActions" style="display: none;">
+                <button class="btn btn-secondary" id="clearCartButton">Clear Cart</button>
+                <button class="btn btn-primary" id="stripeCheckoutButton">Pay with Stripe</button>
+            </div>
+            <div id="paypal-button-container" style="margin-top: 1rem; display: none;"></div>
+        </div>
+    </div>
+
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>SSDF</h3>
+                    <p style="opacity: 0.8;">Open-source development tools with commercial licensing options.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><a href="https://github.com/CreoDAMO" target="_blank" rel="noopener noreferrer">GitHub Organization</a></li>
+                        <li><a href="#projects">Browse Projects</a></li>
+                        <li><a href="mailto:commercial@ssdf.work.gd">Commercial Licensing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="#" id="privacyLink">Privacy Policy</a></li>
+                        <li><a href="#" id="termsLink">Terms of Service</a></li>
+                        <li><a href="#" id="refundLink">Refund Policy</a></li>
+                        <li><a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener noreferrer">MIT License</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <p style="opacity: 0.8;">
+                        Commercial: <a href="mailto:commercial@ssdf.work.gd" style="color: white;">commercial@ssdf.work.gd</a><br>
+                        Support: <a href="mailto:support@ssdf.work.gd" style="color: white;">support@ssdf.work.gd</a>
+                    </p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Sovereign Spiral Development Framework. Open Source Under MIT License.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const CONFIG = {
+            stripePublishableKey: 'pk_test_your_publishable_key_here',
+            backendUrl: 'https://your-backend.herokuapp.com',
+            githubTokenKey: 'ssdf_github_token',
+            cartStorageKey: 'ssdf_cart'
+        };
+
+        // Validate Stripe key on load
+        if (CONFIG.stripePublishableKey.includes('your_publishable_key')) {
+            console.warn('⚠️ Stripe publishable key not configured');
+        }
+
+        const stripe = Stripe(CONFIG.stripePublishableKey);
+
+        const projectPricing = {
+            'workflow-yaml-fixer-pro': {
+                free: true,
+                commercial: 499,
+                enterprise: 999
+            },
+            default: {
+                free: true,
+                commercial: 299,
+                enterprise: 799
+            }
+        };
+
+        let cart = [];
+        let paypalRendered = false;
+
+        // Load cart from localStorage with error handling
+        function loadCart() {
+            const saved = localStorage.getItem(CONFIG.cartStorageKey);
+            if (saved) {
+                try {
+                    cart = JSON.parse(saved);
+                    if (!Array.isArray(cart)) {
+                        console.error('Invalid cart data, resetting');
+                        cart = [];
+                    }
+                } catch (e) {
+                    console.error('Failed to parse cart data, resetting:', e);
+                    cart = [];
+                }
+            }
+            updateCartDisplay();
+        }
+
+        function saveCart() {
+            try {
+                localStorage.setItem(CONFIG.cartStorageKey, JSON.stringify(cart));
+            } catch (e) {
+                console.error('Failed to save cart:', e);
+            }
+        }
+
+        function addToCart(repo, licenseType = 'commercial') {
+            const existingItem = cart.find(item => item.name === repo.name && item.licenseType === licenseType);
+            if (existingItem) {
+                alert('This item is already in your cart!');
+                return;
+            }
+
+            const pricing = projectPricing[repo.name] || projectPricing.default;
+            const price = pricing[licenseType] || 0;
+
+            cart.push({
+                name: repo.name,
+                description: repo.description || 'Professional development tool',
+                price: price,
+                licenseType: licenseType,
+                url: repo.html_url
+            });
+
+            saveCart();
+            updateCartDisplay();
+            alert(`Added ${licenseType} license to cart!`);
+        }
+
+        function addRepoFromButton(btn) {
+            addToCart({
+                name: btn.dataset.repoName,
+                description: btn.dataset.repoDesc,
+                html_url: btn.dataset.repoUrl
+            }, 'commercial');
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            saveCart();
+            updateCartDisplay();
+        }
+
+        function clearCart() {
+            if (confirm('Are you sure you want to clear your cart?')) {
+                cart = [];
+                saveCart();
+                updateCartDisplay();
+            }
+        }
+
+        function updateCartDisplay() {
+            const cartCount = document.getElementById('cartCount');
+            const cartItems = document.getElementById('cartItems');
+            const cartTotal = document.getElementById('cartTotal');
+            const cartActions = document.getElementById('cartActions');
+            const paypalContainer = document.getElementById('paypal-button-container');
+            const totalAmount = document.getElementById('totalAmount');
+
+            cartCount.textContent = cart.length;
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<div class="empty-cart">Your cart is empty<br><small>All projects are free under MIT license. Add commercial licenses if needed.</small></div>';
+                cartTotal.style.display = 'none';
+                cartActions.style.display = 'none';
+                paypalContainer.style.display = 'none';
+                paypalRendered = false;
+            } else {
+                let total = 0;
+                cartItems.innerHTML = cart.map((item, index) => {
+                    total += item.price;
+                    return `
+                        <div class="cart-item">
+                            <div class="cart-item-info">
+                                <h4>${item.name}</h4>
+                                <p>${item.licenseType === 'commercial' ? 'Commercial License' : 'Enterprise License'}</p>
+                            </div>
+                            <span class="cart-item-price">$${item.price}</span>
+                            <button class="remove-item" onclick="removeFromCart(${index})">Remove</button>
+                        </div>
+                    `;
+                }).join('');
+
+                totalAmount.textContent = `$${total}`;
+                cartTotal.style.display = 'flex';
+                cartActions.style.display = 'flex';
+                paypalContainer.style.display = 'block';
+
+                if (!paypalRendered && typeof paypal !== 'undefined') {
+                    renderPayPalButtons();
+                }
+            }
+        }
+
+        function renderPayPalButtons() {
+            try {
+                paypal.Buttons({
+                    createOrder: function(data, actions) {
+                        return fetch(`${CONFIG.backendUrl}/api/paypal/create-order`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ cart: cart })
+                        })
+                        .then(res => {
+                            if (!res.ok) throw new Error('Failed to create PayPal order');
+                            return res.json();
+                        })
+                        .then(order => order.id)
+                        .catch(err => {
+                            console.error('PayPal order creation failed:', err);
+                            alert('Payment initialization failed. Please try Stripe or contact support.');
+                        });
+                    },
+                    onApprove: function(data, actions) {
+                        return fetch(`${CONFIG.backendUrl}/api/paypal/orders/${data.orderID}/capture`, {
+                            method: 'POST'
+                        })
+                        .then(res => {
+                            if (!res.ok) throw new Error('Failed to capture payment');
+                            return res.json();
+                        })
+                        .then(details => {
+                            alert('Payment successful! Check your email for license keys.');
+                            clearCart();
+                        })
+                        .catch(err => {
+                            console.error('PayPal capture failed:', err);
+                            alert('Payment processing failed. Please contact support with order ID: ' + data.orderID);
+                        });
+                    },
+                    onError: function(err) {
+                        console.error('PayPal error:', err);
+                        alert('Payment error occurred. Please try again or use Stripe.');
+                    },
+                    style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'paypal' }
+                }).render('#paypal-button-container');
+                paypalRendered = true;
+            } catch (err) {
+                console.error('PayPal button rendering failed:', err);
+            }
+        }
+
+        function toggleCart() {
+            const modal = document.getElementById('cartModal');
+            modal.classList.toggle('active');
+            if (modal.classList.contains('active')) {
+                updateCartDisplay();
+            }
+        }
+
+        async function checkoutWithStripe() {
+            if (cart.length === 0) return;
+
+            try {
+                const response = await fetch(`${CONFIG.backendUrl}/create-checkout-session`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        items: cart.map(item => ({
+                            name: item.name,
+                            licenseType: item.licenseType,
+                            price: item.price,
+                            quantity: 1
+                        }))
+                    })
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to create checkout session');
+                }
+
+                const { id } = await response.json();
+                const { error } = await stripe.redirectToCheckout({ sessionId: id });
+
+                if (error) {
+                    throw new Error(error.message);
+                }
+            } catch (error) {
+                console.error('Stripe checkout error:', error);
+                alert(`Checkout failed: ${error.message}\n\nPlease try PayPal or contact support.`);
+            }
+        }
+
+        async function loadRepositories() {
+            const username = document.getElementById('githubUsername').value.trim();
+            const repoNames = document.getElementById('repoNames').value.trim();
+            const token = document.getElementById('githubToken').value.trim();
+            
+            if (token) {
+                try {
+                    localStorage.setItem(CONFIG.githubTokenKey, token);
+                } catch (e) {
+                    console.warn('Could not save GitHub token to localStorage');
+                }
+            }
+            
+            if (!username || !repoNames) {
+                alert('Please enter both GitHub username and repository names');
+                return;
+            }
+
+            const repos = repoNames.split(',').map(r => r.trim()).filter(r => r);
+            const container = document.getElementById('projectsContainer');
+            
+            container.innerHTML = '<div class="loading"><div class="spinner"></div>Loading repositories from GitHub...</div>';
+
+            try {
+                const storedToken = token || localStorage.getItem(CONFIG.githubTokenKey) || '';
+                const headers = storedToken ? { Authorization: `token ${storedToken}` } : {};
+                
+                const repoData = await Promise.all(
+                    repos.map(async (repoName) => {
+                        try {
+                            const response = await fetch(`https://api.github.com/repos/${username}/${repoName}`, { headers });
+                            
+                            if (!response.ok) {
+                                if (response.status === 404) {
+                                    throw new Error(`Repository '${repoName}' not found. Check spelling and ensure it exists under '${username}'.`);
+                                } else if (response.status === 403) {
+                                    throw new Error('GitHub API rate limit exceeded. Add a GitHub token or try again later.');
+                                }
+                                throw new Error(`Failed to fetch ${repoName}: ${response.statusText}`);
+                            }
+                            return await response.json();
+                        } catch (error) {
+                            console.error(`Error fetching ${repoName}:`, error);
+                            return { error: error.message, name: repoName };
+                        }
+                    })
+                );
+
+                const validRepos = repoData.filter(repo => !repo.error);
+                const errorRepos = repoData.filter(repo => repo.error);
+
+                if (errorRepos.length > 0) {
+                    const errorMsg = errorRepos.map(r => `${r.name}: ${r.error}`).join('\n');
+                    container.innerHTML = `<div class="error-message">Errors loading repositories:\n${errorMsg}</div>`;
+                    setTimeout(() => {
+                        if (validRepos.length > 0) {
+                            displayProjects(validRepos);
+                        }
+                    }, 3000);
+                    return;
+                }
+
+                if (validRepos.length === 0) {
+                    container.innerHTML = '<div class="loading">No repositories found. Please check your username and repository names.</div>';
+                    return;
+                }
+
+                displayProjects(validRepos);
+            } catch (error) {
+                console.error('Error loading repositories:', error);
+                container.innerHTML = `<div class="error-message">Error: ${error.message}</div>`;
+            }
+        }
+
+        function displayProjects(repos) {
+            const container = document.getElementById('projectsContainer');
+            
+            container.innerHTML = `
+                <div class="project-grid">
+                    ${repos.map(repo => {
+                        const pricing = projectPricing[repo.name] || projectPricing.default;
+                        const language = repo.language || 'Multiple';
+                        const topics = repo.topics || [];
+                        const demoUrl = `https://${repo.owner.login}.github.io/${repo.name}/`;
+                        
+                        return `
+                            <div class="project-card">
+                                <div class="project-header">
+                                    <h3>${repo.name}</h3>
+                                    <span class="price-tag free-badge">MIT License</span>
+                                </div>
+                                <p>${repo.description || 'Professional development tool'}</p>
+                                
+                                ${repo.name === 'workflow-yaml-fixer-pro' ? `
+                                    <a href="${demoUrl}" class="demo-link" target="_blank" rel="noopener noreferrer">
+                                        🚀 Try Live Demo
+                                    </a>
+                                ` : ''}
+                                
+                                <div class="repo-stats">
+                                    <span class="stat">⭐ ${repo.stargazers_count}</span>
+                                    <span class="stat">🍴 ${repo.forks_count}</span>
+                                    <span class="stat">📅 ${new Date(repo.updated_at).toLocaleDateString()}</span>
+                                </div>
+                                <div class="tech-stack">
+                                    <span class="tech-tag">${language}</span>
+                                    ${topics.slice(0, 4).map(topic => `<span class="tech-tag">${topic}</span>`).join('')}
+                                </div>
+                                
+                                <div style="background: var(--bg-light); padding: 1rem; border-radius: 6px; margin: 1rem 0; border-left: 3px solid var(--success);">
+                                    <p style="font-size: 0.9rem; margin: 0; color: var(--text-primary);"><strong>✅ Free to Use:</strong> Clone from GitHub and use under MIT License</p>
+                                </div>
+                                
+                                <div style="background: #fef3c7; padding: 1rem; border-radius: 6px; margin: 1rem 0; border-left: 3px solid var(--warning);">
+                                    <p style="font-size: 0.85rem; margin: 0 0 0.5rem 0; color: var(--text-primary);"><strong>💼 Commercial Licensing:</strong></p>
+                                    <p style="font-size: 0.85rem; margin: 0; color: var(--text-secondary);">
+                                        • Standard: $${pricing.commercial} (white-label, no attribution)<br>
+                                        • Enterprise: $${pricing.enterprise} (priority support, customization)
+                                    </p>
+                                </div>
+                                
+                                <div class="project-links">
+                                    <a href="${repo.html_url}" class="btn btn-secondary" target="_blank" rel="noopener noreferrer">
+                                        View on GitHub
+                                    </a>
+                                    <button class="btn btn-primary" data-repo-name="${repo.name}" data-repo-desc="${repo.description || 'Professional development tool'}" data-repo-url="${repo.html_url}" onclick="addRepoFromButton(this)">
+                                        Add Commercial License
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        function showLegal(type) {
+            const modal = document.createElement('div');
+            modal.className = 'modal active';
+            
+            let content = '';
+            if (type === 'privacy') {
+                content = `
+                    <h2>Privacy Policy</h2>
+                    <p><strong>Last Updated: January 11, 2026</strong></p>
+                    
+                    <h3>1. Information We Collect</h3>
+                    <p>SSDF is committed to privacy. Our website uses minimal data collection:</p>
+                    <ul>
+                        <li><strong>Shopping Cart Data:</strong> Stored locally in your browser using localStorage. We do not transmit cart data to our servers.</li>
+                        <li><strong>Contact Information:</strong> When you email us for commercial licensing, we collect only the information you provide (name, email, company).</li>
+                        <li><strong>GitHub Data:</strong> Repository information is fetched directly from GitHub's public API and not stored by us.</li>
+                    </ul>
+                    
+                    <h3>2. How We Use Information</h3>
+                    <ul>
+                        <li>To respond to commercial licensing inquiries</li>
+                        <li>To provide customer support</li>
+                        <li>To process commercial license agreements</li>
+                    </ul>
+                    
+                    <h3>3. Data Storage</h3>
+                    <p>We do not use cookies or tracking scripts. All cart data is stored locally in your browser.</p>
+                    
+                    <h3>4. Third-Party Services</h3>
+                    <ul>
+                        <li><strong>GitHub:</strong> We fetch public repository data from GitHub's API</li>
+                        <li><strong>Stripe:</strong> Payment processing (see Stripe's privacy policy)</li>
+                        <li><strong>PayPal:</strong> Payment processing (see PayPal's privacy policy)</li>
+                    </ul>
+                    
+                    <h3>5. Your Rights</h3>
+                    <p>You can clear your cart data at any time by clearing your browser's storage or clicking "Clear Cart".</p>
+                    
+                    <h3>6. Contact</h3>
+                    <p>For privacy questions: <a href="mailto:privacy@ssdf.work.gd">privacy@ssdf.work.gd</a></p>
+                `;
+            } else if (type === 'terms') {
+                content = `
+                    <h2>Terms of Service</h2>
+                    <p><strong>Last Updated: January 11, 2026</strong></p>
+                    
+                    <h3>1. Open Source License</h3>
+                    <p>All SSDF projects are released under the MIT License and are freely available on GitHub. You may use, modify, and distribute the software under the terms of the MIT License.</p>
+                    
+                    <h3>2. Commercial Licensing</h3>
+                    <p>Commercial licenses are available for organizations requiring:</p>
+                    <ul>
+                        <li>White-label rights (removal of attribution)</li>
+                        <li>Proprietary product embedding</li>
+                        <li>Priority support and customization</li>
+                        <li>Legal indemnification</li>
+                    </ul>
+                    
+                    <h3>3. Pricing and Payment</h3>
+                    <ul>
+                        <li>All prices are in USD</li>
+                        <li>Commercial licenses are perpetual (one-time payment)</li>
+                        <li>Enterprise support is offered as an annual subscription</li>
+                        <li>Custom pricing available for multi-project licenses</li>
+                    </ul>
+                    
+                    <h3>4. Warranty Disclaimer</h3>
+                    <p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED. This applies to both open-source and commercial licenses.</p>
+                    
+                    <h3>5. Limitation of Liability</h3>
+                    <p>In no event shall SSDF be liable for any damages arising from the use of the software.</p>
+                    
+                    <h3>6. Governing Law</h3>
+                    <p>These terms shall be governed by the laws of the State of Florida.</p>
+                    
+                    <h3>7. Contact</h3>
+                    <p>For legal questions: <a href="mailto:legal@ssdf.work.gd">legal@ssdf.work.gd</a></p>
+                `;
+            } else if (type === 'refund') {
+                content = `
+                    <h2>Refund Policy</h2>
+                    <p><strong>Last Updated: January 11, 2026</strong></p>
+                    
+                    <h3>30-Day Money-Back Guarantee</h3>
+                    <p>If you're not satisfied with your purchase, you may request a full refund within 30 days.</p>
+                    
+                    <h3>Eligibility</h3>
+                    <ul>
+                        <li>Commercial licenses purchased within the last 30 days</li>
+                        <li>Licenses that haven't been used in production deployments</li>
+                        <li>Any reason - no questions asked</li>
+                    </ul>
+                    
+                    <h3>Process</h3>
+                    <ol>
+                        <li>Email <a href="mailto:refunds@ssdf.work.gd">refunds@ssdf.work.gd</a> with your purchase details</li>
+                        <li>We'll process your refund within 5 business days</li>
+                        <li>Refunds are issued to the original payment method</li>
+                    </ol>
+                    
+                    <h3>Contact</h3>
+                    <p>Questions: <a href="mailto:support@ssdf.work.gd">support@ssdf.work.gd</a></p>
+                `;
+            }
+            
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 800px;">
+                    <div class="modal-header">
+                        <h2 style="margin: 0;">${type === 'privacy' ? 'Privacy Policy' : type === 'terms' ? 'Terms of Service' : 'Refund Policy'}</h2>
+                        <button class="close-modal" onclick="this.closest('.modal').remove()" aria-label="Close">✕</button>
+                    </div>
+                    <div class="legal-page">
+                        ${content}
+                    </div>
+                    <button class="btn btn-primary" onclick="this.closest('.modal').remove()" style="width: 100%; margin-top: 1rem;">Close</button>
+                </div>
+            `;
+            
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+            
+            document.body.appendChild(modal);
+        }
+
+        // Event listeners
+        document.getElementById('cartButton').addEventListener('click', toggleCart);
+        document.getElementById('closeCartButton').addEventListener('click', toggleCart);
+        document.getElementById('clearCartButton').addEventListener('click', clearCart);
+        document.getElementById('stripeCheckoutButton').addEventListener('click', checkoutWithStripe);
+        
+        document.getElementById('privacyLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            showLegal('privacy');
+        });
+        
+        document.getElementById('termsLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            showLegal('terms');
+        });
+        
+        document.getElementById('refundLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            showLegal('refund');
+        });
+
+        document.getElementById('cartModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                toggleCart();
+            }
+        });
+
+        // Initialize
+        loadCart();
+        
+        // Auto-load on page load if values are present
+        window.addEventListener('DOMContentLoaded', () => {
+            const hasDefaultValues = document.getElementById('githubUsername').value && 
+                                    document.getElementById('repoNames').value;
+            if (hasDefaultValues) {
+                loadRepositories();
+            }
+        });
+    </script>
+</body>
+</html>
