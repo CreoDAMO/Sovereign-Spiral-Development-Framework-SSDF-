@@ -47,7 +47,7 @@ SSDF provides a complete, honest system for:
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/ssdf.git
+git clone https://github.com/CreoDAMO/Sovereign-Spiral-Development-Framework-SSDF-.git
 cd ssdf
 
 # Backend setup
