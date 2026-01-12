@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Successful - SSDF</title>
+    <meta name="description" content="Your payment was successful. Check your email for license keys.">
+    <style>
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --success: #10b981;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --bg-light: #f8fafc;
+            --border: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .success-card {
+            background: white;
+            border-radius: 16px;
+            padding: 3rem 2rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            animation: scaleIn 0.5s ease-out 0.2s both;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .success-icon svg {
+            width: 50px;
+            height: 50px;
+            stroke: white;
+            stroke-width: 3;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .checkmark {
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+            animation: drawCheck 0.5s ease-out 0.4s forwards;
+        }
+
+        @keyframes drawCheck {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .info-box {
+            background: var(--bg-light);
+            border-left: 4px solid var(--success);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .info-box h2 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .info-box li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-box li::before {
+            content: "✓";
+            color: var(--success);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .session-info {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+            color: #92400e;
+        }
+
+        .session-info strong {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .session-id {
+            font-family: monospace;
+            word-break: break-all;
+            background: white;
+            padding: 0.5rem;
+            border-radius: 4px;
+            margin-top: 0.5rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .support-box {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .support-box p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .support-box a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .support-box a:hover {
+            text-decoration: underline;
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: var(--success);
+            position: absolute;
+            animation: confetti-fall 3s ease-out forwards;
+        }
+
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .success-card {
+                padding: 2rem 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success-card">
+            <div class="success-icon">
+                <svg viewBox="0 0 52 52">
+                    <path class="checkmark" d="M14 27l7 7 16-16"/>
+                </svg>
+            </div>
+
+            <h1>🎉 Payment Successful!</h1>
+            <p class="subtitle">Thank you for your purchase. Your transaction has been completed.</p>
+
+            <div class="info-box">
+                <h2>📧 What Happens Next?</h2>
+                <ul>
+                    <li>License keys are being generated</li>
+                    <li>You'll receive an email within 5 minutes</li>
+                    <li>Check your spam folder if you don't see it</li>
+                    <li>Email contains your unique license keys</li>
+                    <li>All projects remain free under MIT license</li>
+                </ul>
+            </div>
+
+            <div class="session-info" id="sessionInfo" style="display: none;">
+                <strong>Order Reference:</strong>
+                <div class="session-id" id="sessionId"></div>
+                <p style="margin-top: 0.5rem; font-size: 0.85rem;">Save this reference for your records.</p>
+            </div>
+
+            <div class="action-buttons">
+                <a href="index.html" class="btn btn-primary">
+                    ← Back to Projects
+                </a>
+                <a href="mailto:support@ssdf.work.gd" class="btn btn-secondary">
+                    📧 Contact Support
+                </a>
+            </div>
+
+            <div class="support-box">
+                <p>Questions about your license? Contact us at <a href="mailto:support@ssdf.work.gd">support@ssdf.work.gd</a></p>
+                <p style="margin-top: 0.5rem;">View our <a href="#" onclick="showRefundPolicy(); return false;">30-day refund policy</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Extract session ID from URL if present
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = urlParams.get('session_id') || urlParams.get('orderID');
+        
+        if (sessionId) {
+            document.getElementById('sessionInfo').style.display = 'block';
+            document.getElementById('sessionId').textContent = sessionId;
+        }
+
+        // Create confetti effect
+        function createConfetti() {
+            const colors = ['#667eea', '#764ba2', '#10b981', '#f59e0b'];
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+        }
+
+        // Clear cart after successful purchase
+        try {
+            localStorage.removeItem('ssdf_cart');
+        } catch (e) {
+            console.warn('Could not clear cart from localStorage');
+        }
+
+        // Trigger confetti animation
+        window.addEventListener('load', createConfetti);
+
+        // Show refund policy modal
+        function showRefundPolicy() {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+                padding: 1rem;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; border-radius: 12px; padding: 2rem; max-width: 600px; max-height: 80vh; overflow-y: auto;">
+                    <h2 style="margin-bottom: 1rem;">30-Day Refund Policy</h2>
+                    <p style="color: #475569; margin-bottom: 1rem;">
+                        We stand behind the quality of our commercial licenses. If you're not satisfied with your purchase, 
+                        you may request a full refund within 30 days.
+                    </p>
+                    <h3 style="margin-top: 1.5rem; margin-bottom: 0.5rem;">How to Request a Refund:</h3>
+                    <ol style="color: #475569; margin-left: 1.5rem;">
+                        <li>Email <a href="mailto:refunds@ssdf.work.gd" style="color: #667eea;">refunds@ssdf.work.gd</a></li>
+                        <li>Include your order reference: <strong>${sessionId || 'Check your email'}</strong></li>
+                        <li>We'll process your refund within 5 business days</li>
+                    </ol>
+                    <p style="color: #475569; margin-top: 1rem; font-size: 0.9rem;">
+                        Remember: All SSDF projects are free under MIT License. No purchase necessary for personal or internal company use.
+                    </p>
+                    <button onclick="this.closest('div').parentElement.remove()" 
+                            style="width: 100%; margin-top: 1.5rem; padding: 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                                   color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                        Close
+                    </button>
+                </div>
+            `;
+            
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+            
+            document.body.appendChild(modal);
+        }
+
+        // Track conversion (if you add analytics later)
+        if (sessionId) {
+            console.log('Order completed:', sessionId);
+            // Example: gtag('event', 'purchase', { transaction_id: sessionId });
+        }
+    </script>
+</body>
+</html>
