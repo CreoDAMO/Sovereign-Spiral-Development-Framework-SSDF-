@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Canceled - SSDF</title>
+    <meta name="description" content="Your payment was canceled. Your cart items are still saved.">
+    <style>
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --warning: #f59e0b;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --bg-light: #f8fafc;
+            --border: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .cancel-card {
+            background: white;
+            border-radius: 16px;
+            padding: 3rem 2rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .cancel-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--warning) 0%, #f59e0b 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 2rem;
+            animation: scaleIn 0.5s ease-out 0.2s both;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        .cancel-icon svg {
+            width: 50px;
+            height: 50px;
+            stroke: white;
+            stroke-width: 3;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .info-box {
+            background: #fef3c7;
+            border-left: 4px solid var(--warning);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .info-box h2 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .info-box li {
+            padding: 0.5rem 0;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+
+        .info-box li::before {
+            content: "•";
+            color: var(--warning);
+            font-weight: bold;
+            font-size: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .reminder-box {
+            background: var(--bg-light);
+            border: 2px solid #10b981;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+
+        .reminder-box h3 {
+            color: #059669;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .reminder-box p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .support-box {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .support-box p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .support-box a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .support-box a:hover {
+            text-decoration: underline;
+        }
+
+        .reasons {
+            text-align: left;
+            margin: 1.5rem 0;
+        }
+
+        .reasons h3 {
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .reasons ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .reasons li {
+            padding: 0.4rem 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .reasons li::before {
+            content: "→";
+            color: var(--warning);
+            margin-right: 0.5rem;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .cancel-card {
+                padding: 2rem 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="cancel-card">
+            <div class="cancel-icon">
+                <svg viewBox="0 0 52 52">
+                    <line x1="16" y1="16" x2="36" y2="36" />
+                    <line x1="36" y1="16" x2="16" y2="36" />
+                </svg>
+            </div>
+
+            <h1>Payment Canceled</h1>
+            <p class="subtitle">No charges were made. Your cart items are still saved.</p>
+
+            <div class="info-box">
+                <h2>💡 What Happened?</h2>
+                <ul>
+                    <li>You canceled the checkout process</li>
+                    <li>No payment was processed</li>
+                    <li>Your cart items are still saved</li>
+                    <li>You can try again anytime</li>
+                </ul>
+            </div>
+
+            <div class="reminder-box">
+                <h3>✅ Remember: All Projects Are Free!</h3>
+                <p>
+                    Every SSDF project is MIT licensed and completely free to use. 
+                    Commercial licenses are optional and only needed for white-labeling, 
+                    removing attribution, or getting priority support.
+                </p>
+            </div>
+
+            <div class="reasons">
+                <h3>Common Reasons for Cancellation:</h3>
+                <ul>
+                    <li>Reviewing the license terms</li>
+                    <li>Choosing a different payment method</li>
+                    <li>Deciding to use the free MIT version instead</li>
+                    <li>Questions about what's included</li>
+                </ul>
+            </div>
+
+            <div class="action-buttons">
+                <a href="index.html#projects" class="btn btn-primary">
+                    ← Back to Cart
+                </a>
+                <a href="index.html" class="btn btn-secondary">
+                    Browse Projects
+                </a>
+            </div>
+
+            <div class="support-box">
+                <p>Have questions about licensing? We're here to help!</p>
+                <p style="margin-top: 0.5rem;">
+                    Email us at <a href="mailto:commercial@ssdf.work.gd">commercial@ssdf.work.gd</a> 
+                    or read our <a href="#" onclick="showFAQ(); return false;">FAQ</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Track cancellation (for analytics if needed later)
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = urlParams.get('session_id') || urlParams.get('orderID');
+        
+        if (sessionId) {
+            console.log('Checkout canceled:', sessionId);
+            // Example: gtag('event', 'checkout_canceled', { session_id: sessionId });
+        }
+
+        // Show FAQ modal
+        function showFAQ() {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+                padding: 1rem;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; border-radius: 12px; padding: 2rem; max-width: 600px; max-height: 80vh; overflow-y: auto;">
+                    <h2 style="margin-bottom: 1rem;">Frequently Asked Questions</h2>
+                    
+                    <h3 style="margin-top: 1.5rem; margin-bottom: 0.5rem; color: #667eea;">Do I need to buy a license?</h3>
+                    <p style="color: #475569; margin-bottom: 1rem;">
+                        No! All SSDF projects are free under MIT License. Commercial licenses are only needed if you want to:
+                        remove our attribution, white-label the software, or get priority support.
+                    </p>
+                    
+                    <h3 style="margin-top: 1.5rem; margin-bottom: 0.5rem; color: #667eea;">What payment methods do you accept?</h3>
+                    <p style="color: #475569; margin-bottom: 1rem;">
+                        We accept all major credit cards via Stripe, and PayPal payments.
+                    </p>
+                    
+                    <h3 style="margin-top: 1.5rem; margin-bottom: 0.5rem; color: #667eea;">What if I'm not satisfied?</h3>
+                    <p style="color: #475569; margin-bottom: 1rem;">
+                        We offer a 30-day money-back guarantee. Email refunds@ssdf.work.gd for a full refund.
+                    </p>
+                    
+                    <h3 style="margin-top: 1.5rem; margin-bottom: 0.5rem; color: #667eea;">How do I get my license keys?</h3>
+                    <p style="color: #475569; margin-bottom: 1rem;">
+                        License keys are emailed automatically within 5 minutes of payment completion.
+                    </p>
+                    
+                    <h3 style="margin-top: 1.5rem; margin-bottom: 0.5rem; color: #667eea;">Can I use the software commercially for free?</h3>
+                    <p style="color: #475569; margin-bottom: 1rem;">
+                        Yes! The MIT License allows commercial use. Commercial licenses are only for businesses that need 
+                        to remove attribution, white-label, or want legal indemnification.
+                    </p>
+                    
+                    <button onclick="this.closest('div').parentElement.remove()" 
+                            style="width: 100%; margin-top: 1.5rem; padding: 1rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                                   color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                        Close
+                    </button>
+                </div>
+            `;
+            
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.remove();
+            });
+            
+            document.body.appendChild(modal);
+        }
+    </script>
+</body>
+</html>
