@@ -44,7 +44,7 @@ Sovereign-Spiral-Development-Framework-SSDF-/
 │   ├── index.html
 │   ├── success.html
 │   └── cancel.html
-├── api/
+├── backend/api/
 │   ├── health.js
 │   ├── create-checkout-session.js
 │   ├── webhook/
