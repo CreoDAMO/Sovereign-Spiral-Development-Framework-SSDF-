@@ -1,41 +1,69 @@
-{
-  "name": "ssdf-vercel",
-  "version": "1.0.0",
-  "description": "Sovereign Spiral Development Framework - Vercel Deployment",
-  "private": true,
+export default {
+  version: 2,
+  name: "ssdf",
 
-  "main": "backend/api/health.js",
-
-  "scripts": {
-    "dev": "vercel dev",
-    "deploy": "vercel --prod",
-    "deploy:staging": "vercel"
-  },
-
-  "keywords": [
-    "payments",
-    "stripe",
-    "paypal",
-    "licensing",
-    "sovereign-spiral"
+  builds: [
+    {
+      src: "backend/api/**/*.js",
+      use: "@vercel/node"
+    },
+    {
+      src: "frontend/**",
+      use: "@vercel/static"
+    }
   ],
 
-  "author": "Sovereign Spiral Development Framework",
-  "license": "MIT",
+  rewrites: [
+    {
+      source: "/api/(.*)",
+      destination: "/backend/api/$1"
+    },
+    {
+      source: "/success",
+      destination: "/frontend/success.html"
+    },
+    {
+      source: "/cancel",
+      destination: "/frontend/cancel.html"
+    },
+    {
+      source: "/",
+      destination: "/frontend/index.html"
+    },
+    {
+      source: "/(.*)",
+      destination: "/frontend/$1"
+    }
+  ],
 
-  "dependencies": {
-    "@paypal/paypal-server-sdk": "^2.1.0",
-    "nodemailer": "^7.0.12",
-    "stripe": "^20.1.2",
-    "uuid": "^13.0.0"
+  functions: {
+    "backend/api/**/*.js": {
+      memory: 1024,
+      maxDuration: 10
+    }
   },
 
-  "devDependencies": {
-    "vercel": "^50.3.0"
-  },
+  headers: [
+    {
+      source: "/api/(.*)",
+      headers: [
+        {
+          key: "Access-Control-Allow-Origin",
+          value: "*"
+        },
+        {
+          key: "Access-Control-Allow-Methods",
+          value: "GET, POST, OPTIONS"
+        },
+        {
+          key: "Access-Control-Allow-Headers",
+          value: "Content-Type, stripe-signature"
+        }
+      ]
+    }
+  ],
 
-  "engines": {
-    "node": "20.x",
-    "npm": ">=8.0.0"
+  env: {
+    NODE_ENV: "production"
   }
-}
+};
