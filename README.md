@@ -44,7 +44,7 @@ Sovereign-Spiral-Development-Framework-SSDF-/
 │   ├── index.html
 │   ├── success.html
 │   └── cancel.html
-├── backend/api/
+├── api/
 │   ├── health.js
 │   ├── create-checkout-session.js
 │   ├── webhook/
@@ -712,8 +712,8 @@ Recommended services (free tiers available):
 
 - **Documentation:** This README + [docs/](docs/)
 - **Issues:** [GitHub Issues](https://github.com/yourusername/ssdf/issues)
-- **Email:** support@ssdf.work.gd
-- **Commercial:** commercial@ssdf.work.gd
+- **Email:** support@ssdf.site
+- **Commercial:** commercial@ssdf.site
 
 ---
 
@@ -749,9 +749,9 @@ Built with:
 
 ## Contact
 
-**Commercial Inquiries:** commercial@ssdf.work.gd  
-**Support:** support@ssdf.work.gd  
-**Security:** security@ssdf.work.gd  
+**Commercial Inquiries:** commercial@ssdf.site  
+**Support:** support@ssdf.site
+**Security:** security@ssdf.site
 
 ---
 
