@@ -2,16 +2,12 @@ export default {
   version: 2,
   name: "ssdf",
 
-  builds: [
-    {
-      src: "backend/api/**/*.js",
-      use: "@vercel/node"
-    },
-    {
-      src: "frontend/**",
-      use: "@vercel/static"
+  functions: {
+    "backend/api/**/*.js": {
+      memory: 1024,
+      maxDuration: 10
     }
-  ],
+  },
 
   rewrites: [
     {
@@ -36,13 +32,6 @@ export default {
     }
   ],
 
-  functions: {
-    "backend/api/**/*.js": {
-      memory: 1024,
-      maxDuration: 10
-    }
-  },
-
   headers: [
     {
       source: "/api/(.*)",
@@ -61,9 +50,5 @@ export default {
         }
       ]
     }
-  ],
-
-  env: {
-    NODE_ENV: "production"
-  }
+  ]
 };
