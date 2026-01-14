@@ -2,12 +2,16 @@
   "name": "ssdf-vercel",
   "version": "1.0.0",
   "description": "Sovereign Spiral Development Framework - Vercel Deployment",
-  "main": "api/health.js",
+  "private": true,
+
+  "main": "backend/api/health.js",
+
   "scripts": {
     "dev": "vercel dev",
     "deploy": "vercel --prod",
     "deploy:staging": "vercel"
   },
+
   "keywords": [
     "payments",
     "stripe",
@@ -15,19 +19,23 @@
     "licensing",
     "sovereign-spiral"
   ],
+
   "author": "Sovereign Spiral Development Framework",
   "license": "MIT",
+
   "dependencies": {
-    "@paypal/checkout-server-sdk": "^1.0.3",
-    "nodemailer": "^6.9.1",
-    "stripe": "^12.0.0",
-    "uuid": "^9.0.0"
+    "@paypal/paypal-server-sdk": "^2.1.0",
+    "nodemailer": "^7.0.12",
+    "stripe": "^20.1.2",
+    "uuid": "^13.0.0"
   },
+
   "devDependencies": {
-    "vercel": "^33.0.0"
+    "vercel": "^50.3.0"
   },
+
   "engines": {
-    "node": ">=18.0.0",
+    "node": "20.x",
     "npm": ">=8.0.0"
   }
 }
