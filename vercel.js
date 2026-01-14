@@ -3,7 +3,7 @@ export default {
   name: "ssdf",
 
   functions: {
-    "backend/api/**/*.js": {
+    "api/**/*.js": {
       memory: 1024,
       maxDuration: 10
     }
@@ -12,7 +12,7 @@ export default {
   rewrites: [
     {
       source: "/api/(.*)",
-      destination: "/backend/api/$1"
+      destination: "/api/$1"
     },
     {
       source: "/success",
