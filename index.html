@@ -18,12 +18,23 @@
             --text-secondary: #475569;
             --bg-light: #f8fafc;
             --border: #e2e8f0;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+            --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+            --shadow-xl: 0 20px 25px rgba(0,0,0,0.15);
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
@@ -49,7 +60,7 @@
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
             padding: 2rem 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-lg);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -90,11 +101,27 @@
             color: white;
             text-decoration: none;
             font-weight: 500;
-            transition: opacity 0.3s;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: white;
+            transition: width 0.3s;
+        }
+
+        nav a:hover::after {
+            width: 100%;
         }
 
         nav a:hover {
-            opacity: 0.8;
+            opacity: 0.9;
         }
 
         .cart-button {
@@ -103,7 +130,7 @@
             padding: 0.5rem 1rem;
             border-radius: 6px;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: all 0.3s;
             border: none;
             color: white;
             font-weight: 500;
@@ -112,6 +139,7 @@
 
         .cart-button:hover {
             background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
         }
 
         .cart-count {
@@ -131,22 +159,57 @@
         }
 
         .hero {
-            background: white;
-            padding: 3rem 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 0;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
         }
 
         .hero h2 {
             font-size: 2.5rem;
             margin-bottom: 1rem;
-            color: var(--text-primary);
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 0.8s ease-out;
         }
 
         .hero p {
             font-size: 1.2rem;
-            color: var(--text-secondary);
-            max-width: 600px;
+            max-width: 700px;
             margin: 0 auto 2rem;
+            position: relative;
+            z-index: 1;
+            opacity: 0.95;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .trust-badges {
@@ -156,13 +219,19 @@
             flex-wrap: wrap;
             margin-top: 2rem;
             font-size: 0.9rem;
-            color: var(--text-secondary);
+            position: relative;
+            z-index: 1;
         }
 
         .trust-badge {
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            background: rgba(255,255,255,0.2);
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            animation: fadeInUp 1.2s ease-out;
         }
 
         .github-config {
@@ -186,6 +255,12 @@
             border: 2px solid var(--border);
             border-radius: 6px;
             font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .config-form input:focus {
+            outline: none;
+            border-color: var(--primary);
         }
 
         .config-form button {
@@ -196,15 +271,17 @@
             border-radius: 6px;
             font-weight: 600;
             cursor: pointer;
-            transition: opacity 0.3s;
+            transition: all 0.3s;
         }
 
         .config-form button:hover {
-            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
 
         .pricing-section {
             padding: 3rem 0;
+            background: #f5f5f5;
         }
 
         .pricing-grid {
@@ -216,20 +293,41 @@
 
         .pricing-card {
             background: white;
-            border-radius: 12px;
+            border-radius: var(--radius-md);
             padding: 2rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow-md);
             text-align: center;
-            transition: transform 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            position: relative;
+        }
+
+        .pricing-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+            border-radius: var(--radius-md) var(--radius-md) 0 0;
         }
 
         .pricing-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .pricing-card:hover::before {
+            transform: scaleX(1);
         }
 
         .pricing-card h3 {
             font-size: 1.5rem;
             margin-bottom: 0.5rem;
+            color: var(--text-primary);
         }
 
         .pricing-price {
@@ -251,6 +349,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            color: var(--text-secondary);
         }
 
         .pricing-features li:last-child {
@@ -263,24 +362,26 @@
 
         .recommended {
             border: 2px solid var(--primary);
-            position: relative;
+            transform: scale(1.05);
         }
 
-        .recommended::before {
+        .recommended::after {
             content: "Recommended";
             position: absolute;
             top: -12px;
             left: 50%;
             transform: translateX(-50%);
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: white;
             padding: 0.25rem 1rem;
             border-radius: 20px;
             font-size: 0.8rem;
+            font-weight: 700;
         }
 
         .projects {
             padding: 3rem 0;
+            background: white;
         }
 
         .section-title {
@@ -288,6 +389,21 @@
             font-size: 2rem;
             margin-bottom: 2rem;
             color: var(--text-primary);
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 2px;
         }
 
         .loading {
@@ -320,15 +436,35 @@
 
         .project-card {
             background: white;
-            border-radius: 12px;
+            border-radius: var(--radius-md);
             padding: 2rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            position: relative;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--success), #059669);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+            border-radius: var(--radius-md) var(--radius-md) 0 0;
         }
 
         .project-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--success);
+        }
+
+        .project-card:hover::before {
+            transform: scaleX(1);
         }
 
         .project-header {
@@ -367,7 +503,7 @@
             gap: 1rem;
             margin-bottom: 1rem;
             font-size: 0.9rem;
-            color: #718096;
+            color: var(--text-secondary);
             flex-wrap: wrap;
         }
 
@@ -403,11 +539,12 @@
             text-decoration: none;
             font-weight: 600;
             margin: 1rem 0;
-            transition: opacity 0.3s;
+            transition: all 0.3s;
         }
 
         .demo-link:hover {
-            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
 
         .project-links {
@@ -422,13 +559,15 @@
             border-radius: 6px;
             text-decoration: none;
             font-weight: 600;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border: none;
             cursor: pointer;
             font-size: 1rem;
             text-align: center;
             flex: 1;
             min-width: 120px;
+            position: relative;
+            overflow: hidden;
         }
 
         .btn-primary {
@@ -436,8 +575,27 @@
             color: white;
         }
 
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-primary:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
         .btn-primary:hover {
-            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
         }
 
         .btn-secondary {
@@ -449,6 +607,8 @@
         .btn-secondary:hover {
             background: var(--primary);
             color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
 
         .modal {
@@ -459,6 +619,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
             z-index: 1000;
             align-items: center;
             justify-content: center;
@@ -471,12 +632,24 @@
 
         .modal-content {
             background: white;
-            border-radius: 12px;
+            border-radius: var(--radius-md);
             padding: 2rem;
             max-width: 600px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .modal-header {
@@ -494,6 +667,12 @@
             font-size: 1.5rem;
             cursor: pointer;
             color: var(--text-secondary);
+            transition: all 0.3s;
+        }
+
+        .close-modal:hover {
+            color: var(--danger);
+            transform: rotate(90deg);
         }
 
         .cart-item {
@@ -511,7 +690,7 @@
         }
 
         .cart-item-info p {
-            color: #718096;
+            color: var(--text-secondary);
             font-size: 0.9rem;
         }
 
@@ -529,12 +708,13 @@
             padding: 0.5rem 1rem;
             border-radius: 6px;
             cursor: pointer;
-            transition: opacity 0.3s;
+            transition: all 0.3s;
             white-space: nowrap;
         }
 
         .remove-item:hover {
-            opacity: 0.8;
+            background: #dc2626;
+            transform: scale(1.05);
         }
 
         .cart-total {
@@ -556,7 +736,45 @@
         .empty-cart {
             text-align: center;
             padding: 3rem;
-            color: #718096;
+            color: var(--text-secondary);
+        }
+
+        /* ABOUT SECTION - FIXED */
+        .about-section {
+            background: white;
+            padding: 4rem 0;
+            position: relative;
+        }
+
+        .about-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+        }
+
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .about-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .about-content p {
+            font-size: 1.1rem;
+            color: var(--text-secondary) !important;
+            line-height: 1.8;
         }
 
         footer {
@@ -620,7 +838,7 @@
         }
 
         .legal-page p, .legal-page li {
-            color: var(--text-secondary);
+            color: var(--text-secondary) !important;
             margin-bottom: 1rem;
             line-height: 1.8;
         }
@@ -681,6 +899,10 @@
 
             .pricing-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .recommended {
+                transform: scale(1);
             }
         }
     </style>
@@ -800,14 +1022,16 @@
         </div>
     </section>
 
-    <section id="about" style="background: white; padding: 3rem 0;">
+    <section id="about" class="about-section">
         <div class="container">
-            <h2 class="section-title">About SSDF</h2>
-            <p style="max-width: 800px; margin: 0 auto; text-align: center; color: var(--text-secondary); font-size: 1.1rem;">
-                Sovereign Spiral Development Framework creates professional-grade development tools with a commitment to open source. 
-                All our projects are MIT-licensed and available on GitHub. For organizations needing commercial licensing, 
-                we offer flexible options including white-labeling, priority support, and custom development.
-            </p>
+            <div class="about-content">
+                <h2>About SSDF</h2>
+                <p>
+                    Sovereign Spiral Development Framework creates professional-grade development tools with a commitment to open source. 
+                    All our projects are MIT-licensed and available on GitHub. For organizations needing commercial licensing, 
+                    we offer flexible options including white-labeling, priority support, and custom development.
+                </p>
+            </div>
         </div>
     </section>
 
@@ -876,7 +1100,6 @@
             cartStorageKey: 'ssdf_cart'
         };
 
-        // Validate Stripe key on load
         if (CONFIG.stripePublishableKey.includes('your_publishable_key')) {
             console.warn('⚠️ Stripe publishable key not configured');
         }
@@ -899,7 +1122,6 @@
         let cart = [];
         let paypalRendered = false;
 
-        // Load cart from localStorage with error handling
         function loadCart() {
             const saved = localStorage.getItem(CONFIG.cartStorageKey);
             if (saved) {
@@ -1366,7 +1588,6 @@
             document.body.appendChild(modal);
         }
 
-        // Event listeners
         document.getElementById('cartButton').addEventListener('click', toggleCart);
         document.getElementById('closeCartButton').addEventListener('click', toggleCart);
         document.getElementById('clearCartButton').addEventListener('click', clearCart);
@@ -1393,10 +1614,8 @@
             }
         });
 
-        // Initialize
         loadCart();
         
-        // Auto-load on page load if values are present
         window.addEventListener('DOMContentLoaded', () => {
             const hasDefaultValues = document.getElementById('githubUsername').value && 
                                     document.getElementById('repoNames').value;
