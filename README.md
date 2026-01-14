@@ -278,7 +278,7 @@ Commit and push changes - Vercel auto-deploys!
 
 1. **In Vercel Dashboard:**
    - Project → Settings → Domains
-   - Add domain: `ssdf.work.gd`
+   - Add domain: `ssdf.site`
 
 2. **Configure DNS:**
    - Add CNAME record:
@@ -291,7 +291,7 @@ Commit and push changes - Vercel auto-deploys!
 3. **Wait for verification** (can take up to 48 hours)
 
 4. **Update Environment Variables:**
-   - Set `FRONTEND_URL=https://ssdf.work.gd`
+   - Set `FRONTEND_URL=https://ssdf.site`
    - Redeploy
 
 ---
