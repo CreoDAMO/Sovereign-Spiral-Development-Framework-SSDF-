@@ -1,71 +1,41 @@
 {
-  "version": 2,
-  "name": "ssdf",
-  "builds": [
-    {
-      "src": "api/**/*.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "frontend/**",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
-    },
-    {
-      "src": "/success",
-      "dest": "/frontend/success.html"
-    },
-    {
-      "src": "/cancel",
-      "dest": "/frontend/cancel.html"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/frontend/$1"
-    }
-  ],
-  "env": {
-    "NODE_ENV": "production"
+  "name": "ssdf-vercel",
+  "version": "1.0.0",
+  "description": "Sovereign Spiral Development Framework - Vercel Deployment",
+  "private": true,
+
+  "main": "backend/api/health.js",
+
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod",
+    "deploy:staging": "vercel"
   },
-  "build": {
-    "env": {
-      "NODE_ENV": "production"
-    }
-  },
-  "functions": {
-    "api/**/*.js": {
-      "memory": 1024,
-      "maxDuration": 10
-    }
-  },
-  "headers": [
-    {
-      "source": "/api/(.*)",
-      "headers": [
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        },
-        {
-          "key": "Access-Control-Allow-Methods",
-          "value": "GET, POST, OPTIONS"
-        },
-        {
-          "key": "Access-Control-Allow-Headers",
-          "value": "Content-Type, stripe-signature"
-        }
-      ]
-    }
+
+  "keywords": [
+    "payments",
+    "stripe",
+    "paypal",
+    "licensing",
+    "sovereign-spiral"
   ],
-  "rewrites": [
-    {
-      "source": "/",
-      "destination": "/frontend/index.html"
-    }
-  ]
+
+  "author": "Sovereign Spiral Development Framework",
+  "license": "MIT",
+
+  "dependencies": {
+    "@paypal/paypal-server-sdk": "^2.1.0",
+    "nodemailer": "^7.0.12",
+    "stripe": "^20.1.2",
+    "uuid": "^13.0.0"
+  },
+
+  "devDependencies": {
+    "vercel": "^50.3.0"
+  },
+
+  "engines": {
+    "node": "20.x",
+    "npm": ">=8.0.0"
+  }
 }
