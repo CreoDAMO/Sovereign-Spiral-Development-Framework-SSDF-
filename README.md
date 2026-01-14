@@ -32,203 +32,282 @@ SSDF provides a complete, honest system for:
 5. **Production Ready** - Rate limiting, logging, error handling, idempotency built-in
 
 ---
+  
 
-## Quick Start
+---
 
-### Prerequisites
+## Project Structure for Vercel
 
-- Node.js ≥18
-- Stripe account
-- PayPal developer account
-- Email service (Gmail or SendGrid)
-- Heroku account (or alternative hosting)
-
-### Installation
-
-```bash
-# Clone repository
-git clone https://github.com/CreoDAMO/Sovereign-Spiral-Development-Framework-SSDF-.git
-cd ssdf
-
-# Backend setup
-cd backend
-npm install
-cp .env.example .env
-# Edit .env with your API keys
-
-# Start development server
-npm run dev
+```
+Sovereign-Spiral-Development-Framework-SSDF-/
+├── frontend/
+│   ├── index.html
+│   ├── success.html
+│   └── cancel.html
+├── api/
+│   ├── health.js
+│   ├── create-checkout-session.js
+│   ├── webhook/
+│   │   └── stripe.js
+│   └── paypal/
+│       ├── create-order.js
+│       └── capture.js
+├── vercel.json
+├── package.json
+├── .env.example
+└── README.md
 ```
 
-### Deployment
+---
+
+## Step 1: Prerequisites
+
+### Required Accounts
+
+1. **Vercel Account** - https://vercel.com/signup
+   - Sign up with GitHub (recommended)
+   - Free tier is sufficient
+
+2. **Stripe Account** - https://stripe.com
+   - Get API keys (test and live)
+   - Set up webhook
+
+3. **PayPal Developer Account** - https://developer.paypal.com
+   - Create app
+   - Get Client ID and Secret
+
+4. **Email Service**
+   - Gmail with App Password (development)
+   - SendGrid recommended for production
+
+### Install Vercel CLI (Optional)
 
 ```bash
-# Make deploy script executable
-chmod +x deploy.sh
+npm install -g vercel
+```
 
-# Deploy to staging
-./deploy.sh staging
+---
+
+## Step 2: Prepare Your Repository
+
+### File Organization
+
+```bash
+# Create the structure
+mkdir -p frontend api/webhook api/paypal
+
+# Move files
+mv index.html success.html cancel.html frontend/
+
+# Create API files (copy from artifacts)
+# - api/health.js
+# - api/create-checkout-session.js
+# - api/webhook/stripe.js
+# - api/paypal/create-order.js
+# - api/paypal/capture.js
+
+# Create configuration files
+# - vercel.json
+# - package.json
+```
+
+### Update Frontend URLs
+
+Edit `frontend/index.html` and update:
+
+```javascript
+const CONFIG = {
+    stripePublishableKey: 'pk_test_your_key', // Update with your key
+    backendUrl: '', // Leave empty - Vercel uses relative URLs
+    githubTokenKey: 'ssdf_github_token',
+    cartStorageKey: 'ssdf_cart'
+};
+```
+
+**Important:** With Vercel, backend and frontend are on the same domain, so you can use relative URLs like `/api/health` instead of full URLs.
+
+---
+
+## Step 3: Configure Environment Variables
+
+### Create `.env` Locally (for testing)
+
+```bash
+# Create .env file
+cat > .env << 'EOF'
+# Stripe
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+
+# PayPal
+PAYPAL_CLIENT_ID=...
+PAYPAL_CLIENT_SECRET=...
+
+# Email
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USER=your@gmail.com
+EMAIL_PASS=your_app_password
+EMAIL_FROM=commercial@ssdf.work.gd
+
+# Frontend URL (will be auto-set by Vercel)
+FRONTEND_URL=http://localhost:3000
+NODE_ENV=development
+EOF
+```
+
+### Test Locally
+
+```bash
+# Install dependencies
+npm install
+
+# Run locally
+vercel dev
+
+# Test endpoints
+curl http://localhost:3000/api/health
+```
+
+---
+
+## Step 4: Deploy to Vercel
+
+### Option A: Deploy via GitHub (Recommended)
+
+1. **Push to GitHub:**
+   ```bash
+   git add .
+   git commit -m "Setup Vercel deployment"
+   git push origin main
+   ```
+
+2. **Connect to Vercel:**
+   - Go to https://vercel.com/new
+   - Import your GitHub repository
+   - Vercel auto-detects configuration from `vercel.json`
+   - Click "Deploy"
+
+3. **Configure Environment Variables:**
+   - In Vercel dashboard → Settings → Environment Variables
+   - Add all variables from your `.env` file:
+     - `STRIPE_SECRET_KEY`
+     - `STRIPE_WEBHOOK_SECRET`
+     - `PAYPAL_CLIENT_ID`
+     - `PAYPAL_CLIENT_SECRET`
+     - `EMAIL_HOST`
+     - `EMAIL_PORT`
+     - `EMAIL_USER`
+     - `EMAIL_PASS`
+     - `EMAIL_FROM`
+   - Set for: Production, Preview, Development
+
+4. **Redeploy** (if needed):
+   - Environment changes require redeployment
+   - Go to Deployments → Click "..." → Redeploy
+
+### Option B: Deploy via CLI
+
+```bash
+# Login to Vercel
+vercel login
+
+# Deploy to preview
+vercel
 
 # Deploy to production
-./deploy.sh production
+vercel --prod
 ```
 
-See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for complete instructions.
+When prompted:
+- Set up and deploy: **Y**
+- Which scope: Select your account
+- Link to existing project: **N** (first time)
+- What's your project's name: **ssdf**
+- In which directory is your code: **./** (current directory)
+- Want to override settings: **N**
 
 ---
 
-## Project Structure
+## Step 5: Configure Stripe Webhook
 
+1. **Get Your Vercel URL:**
+   - After deployment: `https://your-project.vercel.app`
+   - Or custom domain: `https://ssdf.work.gd`
+
+2. **Add Webhook in Stripe:**
+   - Go to Stripe Dashboard → Developers → Webhooks
+   - Click "Add endpoint"
+   - URL: `https://your-project.vercel.app/api/webhook/stripe`
+   - Events to send: `checkout.session.completed`
+   - Click "Add endpoint"
+
+3. **Update Webhook Secret:**
+   - Copy the signing secret (starts with `whsec_`)
+   - In Vercel dashboard → Environment Variables
+   - Update `STRIPE_WEBHOOK_SECRET` with new value
+   - Redeploy
+
+---
+
+## Step 6: Update Frontend Configuration
+
+After deployment, update `frontend/index.html`:
+
+```javascript
+const CONFIG = {
+    stripePublishableKey: 'pk_live_your_live_key', // Use live key for production
+    backendUrl: '', // Empty = same domain (recommended)
+    githubTokenKey: 'ssdf_github_token',
+    cartStorageKey: 'ssdf_cart'
+};
 ```
-ssdf/
-├── frontend/
-│   ├── index.html                 # Main application (static)
-│   ├── success.html               # Payment success page
-│   └── cancel.html                # Payment canceled page
-│
-├── backend/
-│   ├── server.js                  # Express server with payment logic
-│   ├── package.json               # Dependencies
-│   ├── .env.example               # Environment variables template
-│   └── deploy.sh                  # Deployment script
-│
-├── docs/
-│   ├── DEPLOYMENT_GUIDE.md        # Complete deployment walkthrough
-│   ├── TESTING_GUIDE.md           # All testing scenarios
-│   ├── API_DOCUMENTATION.md       # Endpoint specifications
-│   └── SECURITY.md                # Security policy
-│
-├── README.md                      # This file
-├── CONTRIBUTING.md                # How to contribute
-├── LICENSE                        # MIT License
-└── CHANGELOG.md                   # Version history
+
+And update PayPal client ID:
+```html
+<script src="https://www.paypal.com/sdk/js?client-id=YOUR_LIVE_CLIENT_ID&currency=USD&components=buttons"></script>
 ```
 
----
-
-## Features
-
-### Frontend
-✅ Dynamic GitHub repository loading  
-✅ Optional GitHub token support (local-only storage)  
-✅ Persistent shopping cart (`localStorage`)  
-✅ Multi-item checkout  
-✅ Stripe Checkout integration  
-✅ PayPal Smart Buttons integration  
-✅ Responsive design (mobile-first)  
-✅ Legal pages (Privacy, Terms, Refund)  
-✅ Accessibility (ARIA labels, keyboard navigation)  
-
-### Backend
-✅ Server-side price validation (SKU mapping)  
-✅ Rate limiting (prevents abuse)  
-✅ Webhook-only payment confirmation  
-✅ Automated license key generation (UUID)  
-✅ Email delivery (Nodemailer)  
-✅ Structured logging (Winston)  
-✅ Idempotent webhook handling  
-✅ CORS protection  
-✅ Health check endpoint  
-✅ Graceful error handling  
+Commit and push changes - Vercel auto-deploys!
 
 ---
 
-## Tech Stack
+## Step 7: Custom Domain (Optional)
 
-**Frontend:**
-- Vanilla HTML5 / CSS3 / JavaScript
-- No frameworks, no build step
-- Fully static-hostable
+### Add Custom Domain
 
-**Backend:**
-- Node.js + Express
-- Stripe SDK
-- PayPal Checkout Server SDK
-- Nodemailer
-- Winston (logging)
-- Express-rate-limit
+1. **In Vercel Dashboard:**
+   - Project → Settings → Domains
+   - Add domain: `ssdf.work.gd`
 
-**Deployment:**
-- Frontend: GitHub Pages / Netlify / Vercel
-- Backend: Heroku / Railway / Render
-- Email: Gmail / SendGrid / Postmark
+2. **Configure DNS:**
+   - Add CNAME record:
+     ```
+     Type: CNAME
+     Name: @ (or www)
+     Value: cname.vercel-dns.com
+     ```
 
----
+3. **Wait for verification** (can take up to 48 hours)
 
-## How Licensing Works
-
-All SSDF repositories remain **MIT licensed** on GitHub.
-
-Commercial licenses provide:
-- White-label rights (remove attribution)
-- Proprietary product embedding
-- Legal indemnification
-- Enterprise: Priority support + custom development
-
-**Users who do nothing still retain full MIT rights.**
-
-This is deliberate and by design.
+4. **Update Environment Variables:**
+   - Set `FRONTEND_URL=https://ssdf.work.gd`
+   - Redeploy
 
 ---
 
-## Payments Flow
+## Step 8: Testing
 
-### Stripe
-1. Frontend sends selected SKUs
-2. Backend maps SKU → price (server-side validation)
-3. Stripe Checkout handles payment
-4. Webhook confirms payment
-5. License keys emailed automatically
+### Test Endpoints
 
-### PayPal
-1. Cart items sent as order intent
-2. Order created server-side
-3. Payment approved client-side
-4. Capture confirmed server-side
-5. License keys emailed automatically
+```bash
+# Health check
+curl https://your-project.vercel.app/api/health
 
-All prices are validated server-side. Client-supplied prices are ignored.
-
----
-
-## Security
-
-**Server-Side Validation:**
-- All SKUs and prices validated against `PRICE_MAP`
-- Client cannot manipulate checkout amounts
-
-**Webhook Verification:**
-- Stripe: Signature verification with `stripe.webhooks.constructEvent`
-- PayPal: Recommended webhook verification (optional but suggested)
-
-**Rate Limiting:**
-- Checkout endpoints: 50 requests / 15 minutes per IP
-- Webhook endpoints: 100 requests / minute
-
-**Data Privacy:**
-- GitHub tokens stored locally only (never transmitted)
-- Cart data in `localStorage` (no server storage)
-- No tracking scripts or analytics
-
-**HTTPS Required:**
-- All production deployments must use HTTPS
-- Webhook signatures validated
-- CORS configured to restrict origins
-
-See [SECURITY.md](docs/SECURITY.md) for full security policy.
-
----
-
-## API Endpoints
-
-### `GET /health`
-Health check and service status
-
-**Response:**
-```json
+# Should return:
 {
   "status": "ok",
-  "timestamp": "2026-01-11T12:00:00Z",
+  "timestamp": "2026-01-11T...",
   "version": "1.0.0",
   "services": {
     "stripe": true,
@@ -238,99 +317,312 @@ Health check and service status
 }
 ```
 
-### `POST /create-checkout-session`
-Create Stripe Checkout session
+### Test Frontend
 
-**Request:**
-```json
-{
-  "items": [
-    {
-      "name": "workflow-yaml-fixer-pro",
-      "licenseType": "commercial",
-      "price": 499
-    }
-  ]
-}
-```
+1. Visit `https://your-project.vercel.app`
+2. Load projects from GitHub
+3. Add item to cart
+4. Test checkout with Stripe test card: `4242 4242 4242 4242`
+5. Verify email delivery
+6. Test PayPal flow
 
-**Response:**
-```json
-{
-  "id": "cs_test_..."
-}
-```
-
-### `POST /api/paypal/create-order`
-Create PayPal order
-
-**Request:**
-```json
-{
-  "cart": [
-    {
-      "name": "workflow-yaml-fixer-pro",
-      "licenseType": "commercial",
-      "price": 499
-    }
-  ]
-}
-```
-
-**Response:**
-```json
-{
-  "id": "PAYPAL_ORDER_ID"
-}
-```
-
-See [API_DOCUMENTATION.md](docs/API_DOCUMENTATION.md) for complete API reference.
-
----
-
-## Testing
-
-Complete testing guide available in [TESTING_GUIDE.md](docs/TESTING_GUIDE.md).
-
-### Quick Test
+### Test Webhooks
 
 ```bash
-# Test health endpoint
-curl https://your-backend.herokuapp.com/health
+# Use Stripe CLI
+stripe listen --forward-to https://your-project.vercel.app/api/webhook/stripe
 
-# Test Stripe checkout (with test data)
-curl -X POST https://your-backend.herokuapp.com/create-checkout-session \
-  -H "Content-Type: application/json" \
-  -d '{"items":[{"name":"test-project","licenseType":"commercial","price":299}]}'
-```
-
-### Stripe Test Cards
-
-```
-Success: 4242 4242 4242 4242
-Decline: 4000 0000 0000 0002
-3D Secure: 4000 0027 6000 3184
+# Trigger test event
+stripe trigger checkout.session.completed
 ```
 
 ---
 
-## Deployment Checklist
+## Vercel-Specific Features
 
-Before going live:
+### Automatic Deployments
 
-- [ ] All environment variables configured
-- [ ] Using LIVE Stripe/PayPal keys (not test)
-- [ ] Webhooks configured and verified
-- [ ] Email delivery tested
-- [ ] HTTPS enabled
-- [ ] Rate limiting active
-- [ ] Health check returns 200
-- [ ] End-to-end purchase tested
-- [ ] License email received
-- [ ] Logs configured
-- [ ] Monitoring setup (optional but recommended)
+Every `git push` to main triggers:
+- Automatic build
+- Serverless function deployment
+- CDN cache update
+- Preview URL generation
 
-See [DEPLOYMENT_GUIDE.md](docs/DEPLOYMENT_GUIDE.md) for step-by-step instructions.
+### Preview Deployments
+
+Every Pull Request gets:
+- Unique preview URL
+- Isolated environment
+- Same environment variables
+- Test before merging
+
+### Monitoring
+
+Vercel provides:
+- Real-time logs
+- Function metrics
+- Error tracking
+- Performance insights
+
+Access via: Dashboard → Your Project → Monitoring
+
+---
+
+## Environment Management
+
+### Development
+```bash
+vercel dev
+# Runs at http://localhost:3000
+```
+
+### Preview (Staging)
+```bash
+vercel
+# Deploys to preview URL
+```
+
+### Production
+```bash
+vercel --prod
+# Deploys to production domain
+```
+
+---
+
+## Troubleshooting
+
+### "Function exceeded maximum size"
+
+**Problem:** Serverless function too large
+
+**Solution:**
+```bash
+# Reduce node_modules size
+npm install --production
+
+# Or split large functions into smaller ones
+```
+
+### "Environment variable not found"
+
+**Problem:** Missing env vars in Vercel
+
+**Solution:**
+1. Go to Vercel dashboard
+2. Settings → Environment Variables
+3. Add missing variables
+4. Redeploy
+
+### "Webhook signature verification failed"
+
+**Problem:** Wrong webhook secret
+
+**Solution:**
+1. Get correct secret from Stripe dashboard
+2. Update `STRIPE_WEBHOOK_SECRET` in Vercel
+3. Redeploy
+4. Test webhook again
+
+### "Email delivery failed"
+
+**Problem:** Email credentials incorrect
+
+**Solution:**
+1. Verify `EMAIL_USER` and `EMAIL_PASS`
+2. For Gmail, use App Password (not regular password)
+3. Consider SendGrid for production
+
+### "CORS errors"
+
+**Problem:** Cross-origin request blocked
+
+**Solution:**
+Already configured in `vercel.json` headers section. If issues persist:
+```javascript
+// Add to each API function
+res.setHeader('Access-Control-Allow-Origin', '*');
+```
+
+---
+
+## Performance Optimization
+
+### Enable Caching
+
+Already configured in `vercel.json`. Frontend assets cached automatically.
+
+### Edge Functions (Future)
+
+For ultra-fast responses, consider upgrading critical endpoints to Edge Functions:
+
+```javascript
+// Add to function file
+export const config = {
+  runtime: 'edge',
+};
+```
+
+### Database Connection Pooling
+
+If you add a database later, use connection pooling for serverless:
+- Vercel Postgres (built-in pooling)
+- PlanetScale (serverless-friendly)
+- Supabase (auto-pooling)
+
+---
+
+## Scaling
+
+### Free Tier Limits
+
+- **Bandwidth:** 100GB/month
+- **Function Executions:** 100GB-hours/month
+- **Build Minutes:** 6000 minutes/month
+- **Serverless Function Size:** 50MB compressed
+
+### When to Upgrade
+
+Upgrade to Pro ($20/month) when you need:
+- More bandwidth
+- Faster builds
+- Team collaboration
+- Advanced analytics
+- Password protection
+
+---
+
+## Migration from Heroku
+
+If you previously deployed to Heroku:
+
+1. **Stop Heroku app** (optional - can run both)
+2. **Update DNS** to point to Vercel
+3. **Migrate environment variables** to Vercel
+4. **Update webhook URLs** in Stripe/PayPal
+5. **Test thoroughly**
+6. **Delete Heroku app** (if desired)
+
+---
+
+## Monitoring & Logs
+
+### View Logs
+
+```bash
+# Via CLI
+vercel logs your-project.vercel.app
+
+# Or in dashboard
+# Project → Deployments → Click deployment → View Function Logs
+```
+
+### Add Custom Logging
+
+```javascript
+// In any API function
+console.log('Custom log message', { data: 'here' });
+console.error('Error occurred:', error);
+```
+
+Logs appear in Vercel dashboard under Functions → Logs.
+
+---
+
+## Security Best Practices
+
+✅ **Never commit `.env`** - Use Vercel environment variables  
+✅ **Use environment variables** for all secrets  
+✅ **Enable HTTPS** - Automatic with Vercel  
+✅ **Verify webhook signatures** - Already implemented  
+✅ **Rate limit** - Implemented in functions  
+✅ **Validate input** - All endpoints validate  
+✅ **Keep dependencies updated** - `npm audit` regularly  
+
+---
+
+## Backup & Recovery
+
+### Rollback Deployment
+
+In Vercel dashboard:
+1. Go to Deployments
+2. Find previous successful deployment
+3. Click "..." → Promote to Production
+
+### Export Configuration
+
+```bash
+# Download environment variables
+vercel env pull .env.production
+
+# Save deployment settings
+vercel project ls
+```
+
+---
+
+## Cost Estimates
+
+### Free Tier (Most Users)
+- $0/month
+- Sufficient for small to medium projects
+- 100GB bandwidth
+- Unlimited deployments
+
+### Pro Tier ($20/month)
+- For growing businesses
+- 1TB bandwidth
+- Team features
+- Advanced analytics
+
+### Enterprise (Custom)
+- For large organizations
+- Unlimited everything
+- Dedicated support
+- SLA guarantees
+
+---
+
+## Next Steps
+
+1. ✅ Deploy to Vercel
+2. ✅ Configure environment variables
+3. ✅ Set up Stripe webhook
+4. ✅ Test payment flow
+5. ✅ Add custom domain (optional)
+6. ✅ Monitor performance
+7. ✅ Set up alerts (optional)
+
+---
+
+## Support
+
+- **Vercel Docs:** https://vercel.com/docs
+- **Community:** https://github.com/vercel/vercel/discussions
+- **SSDF Support:** support@ssdf.work.gd
+
+---
+
+## Advantages Over Heroku
+
+| Feature | Heroku | Vercel |
+|---------|--------|--------|
+| **Free Tier** | Limited (sleeps) | ✅ Generous |
+| **Setup** | Manual | ✅ Auto-detect |
+| **Frontend Hosting** | Separate service | ✅ Built-in |
+| **Auto-deploy** | Manual | ✅ Git push |
+| **Global CDN** | Add-on | ✅ Included |
+| **Serverless** | No | ✅ Yes |
+| **Cost (small)** | $7-25/mo | ✅ $0 |
+
+---
+
+**Congratulations! Your Sovereign Spiral Development Framework is now deployed on Vercel! 🎉**
+
+**Last Updated:** January 11, 2026  
+**Version:** 1.0.0  
+**Platform:** Vercel Serverless
 
 ---
 
@@ -344,44 +636,6 @@ Example pricing structure (customizable):
 | **Commercial** | $299-$499 | White-label, no attribution, proprietary use |
 | **Enterprise** | $799-$999 | Priority support, custom development, SLA |
 
-Server-side price map in `server.js`:
-```javascript
-const PRICE_MAP = {
-  'workflow-yaml-fixer-pro-commercial': 499,
-  'workflow-yaml-fixer-pro-enterprise': 999,
-  'default-commercial': 299,
-  'default-enterprise': 799
-};
-```
-
----
-
-## Environment Variables
-
-Required variables (see `.env.example`):
-
-```bash
-# Stripe
-STRIPE_SECRET_KEY=sk_test_...
-STRIPE_WEBHOOK_SECRET=whsec_...
-
-# PayPal
-PAYPAL_CLIENT_ID=...
-PAYPAL_CLIENT_SECRET=...
-
-# Email
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
-EMAIL_USER=your-email@gmail.com
-EMAIL_PASS=your-app-password
-EMAIL_FROM=commercial@ssdf.work.gd
-
-# General
-NODE_ENV=production
-FRONTEND_URL=https://your-frontend.com
-PORT=4242
-LOG_LEVEL=info
-```
 
 ---
 
