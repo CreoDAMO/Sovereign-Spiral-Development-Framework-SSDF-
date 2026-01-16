@@ -23,8 +23,24 @@ export default {
       destination: "/frontend/cancel.html"
     },
     {
+      source: "/privacy",
+      destination: "/frontend/privacy.html"
+    },
+    {
+      source: "/terms",
+      destination: "/frontend/terms.html"
+    },
+    {
+      source: "/refund",
+      destination: "/frontend/refund.html"
+    },
+    {
       source: "/",
       destination: "/frontend/index.html"
+    },
+    {
+      source: "/(.*).html",
+      destination: "/frontend/$1.html"
     },
     {
       source: "/(.*)",
@@ -47,6 +63,15 @@ export default {
         {
           key: "Access-Control-Allow-Headers",
           value: "Content-Type, stripe-signature"
+        }
+      ]
+    },
+    {
+      source: "/frontend/(.*).html",
+      headers: [
+        {
+          key: "Cache-Control",
+          value: "public, max-age=0, must-revalidate"
         }
       ]
     }
