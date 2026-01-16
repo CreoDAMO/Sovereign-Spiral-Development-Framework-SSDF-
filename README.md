@@ -1,6 +1,5 @@
 # Sovereign-Spiral-Development-Framework-SSDF-
 
-
 A production-ready framework for distributing open-source tools with optional commercial licensing.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -13,7 +12,7 @@ A production-ready framework for distributing open-source tools with optional co
 SSDF provides a complete, honest system for:
 - Publishing software tools under MIT license (always free)
 - Offering commercial licensing as optional rights expansion
-- Processing payments via Stripe and PayPal
+- Processing payments via Stripe
 - Automated license key delivery
 - Dynamic product catalog from GitHub repositories
 
@@ -32,9 +31,6 @@ SSDF provides a complete, honest system for:
 5. **Production Ready** - Rate limiting, logging, error handling, idempotency built-in
 
 ---
-  
-
----
 
 ## Project Structure for Vercel
 
@@ -42,16 +38,16 @@ SSDF provides a complete, honest system for:
 Sovereign-Spiral-Development-Framework-SSDF-/
 ├── frontend/
 │   ├── index.html
+│   ├── privacy.html
+│   ├── terms.html
+│   ├── refund.html
 │   ├── success.html
 │   └── cancel.html
 ├── api/
 │   ├── health.js
 │   ├── create-checkout-session.js
-│   ├── webhook/
-│   │   └── stripe.js
-│   └── paypal/
-│       ├── create-order.js
-│       └── capture.js
+│   └── webhook/
+│       └── stripe.js
 ├── vercel.json
 ├── package.json
 ├── .env.example
@@ -72,11 +68,7 @@ Sovereign-Spiral-Development-Framework-SSDF-/
    - Get API keys (test and live)
    - Set up webhook
 
-3. **PayPal Developer Account** - https://developer.paypal.com
-   - Create app
-   - Get Client ID and Secret
-
-4. **Email Service**
+3. **Email Service**
    - Gmail with App Password (development)
    - SendGrid recommended for production
 
@@ -94,17 +86,15 @@ npm install -g vercel
 
 ```bash
 # Create the structure
-mkdir -p frontend api/webhook api/paypal
+mkdir -p frontend api/webhook
 
 # Move files
-mv index.html success.html cancel.html frontend/
+mv index.html privacy.html terms.html refund.html success.html cancel.html frontend/
 
 # Create API files (copy from artifacts)
 # - api/health.js
 # - api/create-checkout-session.js
 # - api/webhook/stripe.js
-# - api/paypal/create-order.js
-# - api/paypal/capture.js
 
 # Create configuration files
 # - vercel.json
@@ -139,16 +129,12 @@ cat > .env << 'EOF'
 STRIPE_SECRET_KEY=sk_test_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 
-# PayPal
-PAYPAL_CLIENT_ID=...
-PAYPAL_CLIENT_SECRET=...
-
 # Email
 EMAIL_HOST=smtp.gmail.com
 EMAIL_PORT=587
 EMAIL_USER=your@gmail.com
 EMAIL_PASS=your_app_password
-EMAIL_FROM=commercial@ssdf.work.gd
+EMAIL_FROM=commercial@ssdf.site
 
 # Frontend URL (will be auto-set by Vercel)
 FRONTEND_URL=http://localhost:3000
@@ -193,8 +179,6 @@ curl http://localhost:3000/api/health
    - Add all variables from your `.env` file:
      - `STRIPE_SECRET_KEY`
      - `STRIPE_WEBHOOK_SECRET`
-     - `PAYPAL_CLIENT_ID`
-     - `PAYPAL_CLIENT_SECRET`
      - `EMAIL_HOST`
      - `EMAIL_PORT`
      - `EMAIL_USER`
@@ -233,7 +217,7 @@ When prompted:
 
 1. **Get Your Vercel URL:**
    - After deployment: `https://your-project.vercel.app`
-   - Or custom domain: `https://ssdf.work.gd`
+   - Or custom domain: `https://ssdf.site`
 
 2. **Add Webhook in Stripe:**
    - Go to Stripe Dashboard → Developers → Webhooks
@@ -261,11 +245,6 @@ const CONFIG = {
     githubTokenKey: 'ssdf_github_token',
     cartStorageKey: 'ssdf_cart'
 };
-```
-
-And update PayPal client ID:
-```html
-<script src="https://www.paypal.com/sdk/js?client-id=YOUR_LIVE_CLIENT_ID&currency=USD&components=buttons"></script>
 ```
 
 Commit and push changes - Vercel auto-deploys!
@@ -311,7 +290,6 @@ curl https://your-project.vercel.app/api/health
   "version": "1.0.0",
   "services": {
     "stripe": true,
-    "paypal": true,
     "email": true
   }
 }
@@ -324,7 +302,10 @@ curl https://your-project.vercel.app/api/health
 3. Add item to cart
 4. Test checkout with Stripe test card: `4242 4242 4242 4242`
 5. Verify email delivery
-6. Test PayPal flow
+6. Test legal pages:
+   - `https://your-project.vercel.app/privacy.html`
+   - `https://your-project.vercel.app/terms.html`
+   - `https://your-project.vercel.app/refund.html`
 
 ### Test Webhooks
 
@@ -444,6 +425,16 @@ Already configured in `vercel.json` headers section. If issues persist:
 res.setHeader('Access-Control-Allow-Origin', '*');
 ```
 
+### "404 NOT_FOUND" on Legal Pages
+
+**Problem:** Legal pages not accessible
+
+**Solution:**
+1. Ensure files are in `frontend/` directory
+2. Verify `vercel.json` rewrites include HTML files
+3. Test URLs directly in browser
+4. Check Vercel deployment includes all files
+
 ---
 
 ## Performance Optimization
@@ -499,7 +490,7 @@ If you previously deployed to Heroku:
 1. **Stop Heroku app** (optional - can run both)
 2. **Update DNS** to point to Vercel
 3. **Migrate environment variables** to Vercel
-4. **Update webhook URLs** in Stripe/PayPal
+4. **Update webhook URLs** in Stripe
 5. **Test thoroughly**
 6. **Delete Heroku app** (if desired)
 
@@ -591,8 +582,9 @@ vercel project ls
 3. ✅ Set up Stripe webhook
 4. ✅ Test payment flow
 5. ✅ Add custom domain (optional)
-6. ✅ Monitor performance
-7. ✅ Set up alerts (optional)
+6. ✅ Add legal pages (privacy, terms, refund)
+7. ✅ Monitor performance
+8. ✅ Set up alerts (optional)
 
 ---
 
@@ -600,7 +592,7 @@ vercel project ls
 
 - **Vercel Docs:** https://vercel.com/docs
 - **Community:** https://github.com/vercel/vercel/discussions
-- **SSDF Support:** support@ssdf.work.gd
+- **SSDF Support:** support@ssdf.site
 
 ---
 
@@ -620,8 +612,8 @@ vercel project ls
 
 **Congratulations! Your Sovereign Spiral Development Framework is now deployed on Vercel! 🎉**
 
-**Last Updated:** January 11, 2026  
-**Version:** 1.0.0  
+**Last Updated:** January 2026  
+**Version:** 1.0.1  
 **Platform:** Vercel Serverless
 
 ---
@@ -635,7 +627,6 @@ Example pricing structure (customizable):
 | **Free** | $0 | MIT License, personal/internal use |
 | **Commercial** | $299-$499 | White-label, no attribution, proprietary use |
 | **Enterprise** | $799-$999 | Priority support, custom development, SLA |
-
 
 ---
 
@@ -663,8 +654,8 @@ Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md).
 ### Logs
 
 ```bash
-# View Heroku logs
-heroku logs --tail --app your-app
+# View Vercel logs
+vercel logs your-project.vercel.app
 
 # Check error log file
 cat error.log | grep ERROR
@@ -687,11 +678,13 @@ Recommended services (free tiers available):
 ## Roadmap
 
 ### v1.0 (Current)
-- ✅ Stripe + PayPal integration
+- ✅ Stripe integration
 - ✅ Automated license delivery
 - ✅ GitHub repository loading
 - ✅ Rate limiting
 - ✅ Production deployment
+- ✅ Legal pages (privacy, terms, refund)
+- ✅ Success and cancel pages
 
 ### v1.1 (Planned)
 - [ ] Automated testing suite
@@ -731,26 +724,26 @@ Available separately for projects built with SSDF. See pricing section.
 
 Built with:
 - [Stripe](https://stripe.com) - Payment processing
-- [PayPal](https://paypal.com) - Alternative payments
 - [Nodemailer](https://nodemailer.com) - Email delivery
 - [Winston](https://github.com/winstonjs/winston) - Logging
 - [Express](https://expressjs.com) - Web framework
+- [Vercel](https://vercel.com) - Hosting and deployment
 
 ---
 
 ## Status
 
-**Version:** 1.0.0  
+**Version:** 1.0.1  
 **Status:** Production Ready  
-**Last Updated:** January 11, 2026  
-**Maintained:** Yes  
+**Last Updated:** January 2026  
+**Maintained:** Yes
 
 ---
 
 ## Contact
 
 **Commercial Inquiries:** commercial@ssdf.site  
-**Support:** support@ssdf.site
+**Support:** support@ssdf.site  
 **Security:** security@ssdf.site
 
 ---
