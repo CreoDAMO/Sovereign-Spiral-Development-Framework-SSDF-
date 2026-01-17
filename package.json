@@ -1,7 +1,7 @@
 {
   "name": "ssdf-vercel",
   "version": "1.0.0",
-  "description": "Sovereign Spiral Dev Framework - Vercel Deployment",
+  "description": "Sovereign Spiral Dev Framework - SSDF - Vercel Deployment",
   "private": true,
 
   "main": "backend/api/health.js",
@@ -20,7 +20,7 @@
     "sovereign-spiral"
   ],
 
-  "author": "Sovereign Spiral Development Framework",
+  "author": "Sovereign Spiral Dev Framework -SSDF",
   "license": "MIT",
 
   "dependencies": {
